@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0467745D2AA2A79A00DAD55E /* Indicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0467745C2AA2A79A00DAD55E /* Indicator.swift */; };
 		04DE06EA2AA27C7000F9A2B4 /* UserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DE06E92AA27C7000F9A2B4 /* UserDetails.swift */; };
 		04DE06ED2AA2834F00F9A2B4 /* UserAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04DE06EC2AA2834F00F9A2B4 /* UserAPI.swift */; };
 		04E6690E2AA2504F009C9D41 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6690D2AA2504F009C9D41 /* AppDelegate.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0467745C2AA2A79A00DAD55E /* Indicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indicator.swift; sourceTree = "<group>"; };
 		04DE06E92AA27C7000F9A2B4 /* UserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetails.swift; sourceTree = "<group>"; };
 		04DE06EC2AA2834F00F9A2B4 /* UserAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPI.swift; sourceTree = "<group>"; };
 		04E6690A2AA2504F009C9D41 /* UserDirectory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UserDirectory.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +47,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0467745B2AA2A77800DAD55E /* Globals */ = {
+			isa = PBXGroup;
+			children = (
+				0467745C2AA2A79A00DAD55E /* Indicator.swift */,
+			);
+			path = Globals;
+			sourceTree = "<group>";
+		};
 		04DE06E72AA27C3500F9A2B4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +90,7 @@
 		04E6690C2AA2504F009C9D41 /* UserDirectory */ = {
 			isa = PBXGroup;
 			children = (
+				0467745B2AA2A77800DAD55E /* Globals */,
 				04DE06EB2AA2833600F9A2B4 /* Networking */,
 				04DE06E72AA27C3500F9A2B4 /* Models */,
 				04E669212AA27781009C9D41 /* Cells */,
@@ -176,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04E669242AA277AC009C9D41 /* UsersTableViewCell.swift in Sources */,
+				0467745D2AA2A79A00DAD55E /* Indicator.swift in Sources */,
 				04E669122AA2504F009C9D41 /* ViewController.swift in Sources */,
 				04E6690E2AA2504F009C9D41 /* AppDelegate.swift in Sources */,
 				04E669102AA2504F009C9D41 /* SceneDelegate.swift in Sources */,
