@@ -10,6 +10,8 @@ import Foundation
 import Foundation
 
 var usersArray: [UserSruct] = []
+var filteredUsers: [UserSruct] = []
+var isSearching = false
 
 struct Results: Codable {
     let results: [UserSruct]
