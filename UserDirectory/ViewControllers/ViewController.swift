@@ -103,7 +103,7 @@ extension ViewController: UIScrollViewDelegate{
                     }
 
                     if let users = users {
-                        usersArray.append(contentsOf: users)
+                        filteredUsers.append(contentsOf: users)
                         DispatchQueue.main.async {
                             self?.usersTbl.reloadData()
                             activityIndicator.stopAnimating()
