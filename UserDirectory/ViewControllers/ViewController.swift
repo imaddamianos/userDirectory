@@ -20,8 +20,6 @@ class ViewController: UIViewController{
     }
     
     func setupView(){
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        view.addGestureRecognizer(tapGesture)
         searchBar.delegate = self
         usersTbl.dataSource = self
         usersTbl.delegate = self
@@ -72,15 +70,16 @@ class ViewController: UIViewController{
         }
     }
     
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        // Check if the search bar is the first responder (keyboard is open)
-        if searchBar.isFirstResponder {
-            // Resign the first responder status to dismiss the keyboard
-            searchBar.resignFirstResponder()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetails" {
+            if let indexPath = usersTbl.indexPathForSelectedRow {
+                let selectedUser = filteredUsers[indexPath.row] // Use the correct user array
+                if let detailsViewController = segue.destination as? DetailsViewController {
+                    detailsViewController.user = selectedUser // Assuming you have a 'user' property in DetailsViewController
+                }
+            }
         }
     }
-
-
 }
 
 // MARK: - UIScrollView
@@ -174,6 +173,10 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
         
         return cell
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowDetails", sender: self)
+    }
+    
 }
 
 

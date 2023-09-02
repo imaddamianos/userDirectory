@@ -24,6 +24,7 @@ struct UserSruct: Codable {
     var email: String
     let picture: Picture
     var phone: String
+    var gender: String
 }
 
 struct Picture: Codable {

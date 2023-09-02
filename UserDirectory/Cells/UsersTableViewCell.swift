@@ -20,6 +20,9 @@ class UsersTableViewCell: UITableViewCell {
         super.awakeFromNib()
         userImg.layer.cornerRadius = userImg.frame.size.width / 2
         userImg.clipsToBounds = true
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 10
+        self.layer.borderColor = UIColor.lightGray.cgColor
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
