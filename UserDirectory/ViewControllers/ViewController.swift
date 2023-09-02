@@ -14,6 +14,7 @@ class ViewController: UIViewController{
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var genderPercentage: UILabel!
     @IBOutlet weak var themeLbl: UILabel!
+    var isFetchingData = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -135,11 +136,12 @@ extension ViewController: UIScrollViewDelegate{
         let contentHeight = scrollView.contentSize.height
         let screenHeight = scrollView.frame.height
 
-        // Check if the user has scrolled to the bottom or near the bottom (e.g., within 100 points)
+        // Check if the user has scrolled to the bottom
         if offsetY > contentHeight - screenHeight - 100 {
-            if !isLoadingMore {
+            if !isLoadingMore && !isFetchingData {
                 activityIndicator.startAnimating()
-                currentPage += 1 // Increment the page number
+                isFetchingData = true // Set the flag to indicate a fetch request is in progress
+                currentPage += 1
                 UserDirectory.fetchUsers(page: currentPage) { [weak self] (users, error) in
                     if let error = error {
                         print("Error fetching more users: \(error)")
@@ -152,15 +154,14 @@ extension ViewController: UIScrollViewDelegate{
                             activityIndicator.stopAnimating()
                             self?.calculateGenderPercentage()
                             isLoadingMore = false
+                            self?.isFetchingData = false // Reset the flag when the request completes
                         }
                     }
                 }
             }
         }
     }
-
-
-    }
+}
 
 // MARK: - UISearchBarDelegate
 
