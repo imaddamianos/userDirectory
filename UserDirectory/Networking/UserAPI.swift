@@ -7,8 +7,8 @@
 
 import Foundation
 
-func fetchUsers(completion: @escaping ([UserSruct]?, Error?) -> Void) {
-    let url = URL(string: "https://randomuser.me/api/?page=1&results=20")!
+func fetchUsers(page: Int, completion: @escaping ([UserSruct]?, Error?) -> Void) {
+    let url = URL(string: "https://randomuser.me/api/?page=\(page)&results=20")!
     let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
         if let error = error {
             completion(nil, error)

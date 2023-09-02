@@ -16,27 +16,12 @@ class ViewController: UIViewController{
         super.viewDidLoad()
         
         setupView()
-        
-        // Fetch users from the API and populate the usersArray
-        fetchUsers { [weak self] (users, error) in
-            if let error = error {
-                print("Error fetching users: \(error)")
-                return
-            }
-            
-            if let users = users {
-                cacheUsers(users)
-                usersArray = users
-                filteredUsers = usersArray
-                DispatchQueue.main.async {
-                    activityIndicator.stopAnimating()
-                    self?.usersTbl.reloadData()
-                }
-            }
-        }
+        fetchUsers()
     }
     
     func setupView(){
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        view.addGestureRecognizer(tapGesture)
         searchBar.delegate = self
         usersTbl.dataSource = self
         usersTbl.delegate = self
@@ -58,17 +43,79 @@ class ViewController: UIViewController{
             // Filter users based on the search text
             filteredUsers = usersArray.filter { user in
                 let searchTextLowercased = searchText.lowercased()
-                let fullName = "\(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last)) \(xorDecrypt(user.email))".lowercased()
+                let fullName = "\(xorDecrypt(user.name.title)) \(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last)) \(xorDecrypt(user.email)) \(xorDecrypt(user.phone))".lowercased()
                 
-                return fullName.contains(searchTextLowercased) || xorDecrypt(user.phone).contains(searchText)
+                return fullName.contains(searchTextLowercased)
             }
         }
         
         // Reload the table view to display the filtered results
         usersTbl.reloadData()
     }
+    
+    func fetchUsers() {
+        UserDirectory.fetchUsers(page: currentPage) { [weak self] (users, error) in
+            if let error = error {
+                print("Error fetching users: \(error)")
+                return
+            }
+            
+            if let users = users {
+                cacheUsers(users)
+                usersArray = users
+                filteredUsers = usersArray
+                DispatchQueue.main.async {
+                    activityIndicator.stopAnimating()
+                    self?.usersTbl.reloadData()
+                }
+            }
+        }
+    }
+    
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        // Check if the search bar is the first responder (keyboard is open)
+        if searchBar.isFirstResponder {
+            // Resign the first responder status to dismiss the keyboard
+            searchBar.resignFirstResponder()
+        }
+    }
+
 
 }
+
+// MARK: - UIScrollView
+extension ViewController: UIScrollViewDelegate{
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Assuming 'usersTbl' is your UITableView
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let screenHeight = scrollView.frame.height
+
+        // Check if the user has scrolled to the bottom or near the bottom (e.g., within 100 points)
+        if offsetY > contentHeight - screenHeight - 100 {
+            if !isLoadingMore {
+                activityIndicator.startAnimating()
+                currentPage += 1 // Increment the page number
+                UserDirectory.fetchUsers(page: currentPage) { [weak self] (users, error) in
+                    if let error = error {
+                        print("Error fetching more users: \(error)")
+                    }
+
+                    if let users = users {
+                        usersArray.append(contentsOf: users)
+                        DispatchQueue.main.async {
+                            self?.usersTbl.reloadData()
+                            activityIndicator.stopAnimating()
+                            isLoadingMore = false
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    }
 
 // MARK: - UISearchBarDelegate
 

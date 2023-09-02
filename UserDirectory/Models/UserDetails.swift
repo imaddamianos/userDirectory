@@ -9,7 +9,9 @@ import Foundation
 
 import Foundation
 
+var currentPage = 1
 var usersArray: [UserSruct] = []
+var isLoadingMore = false // To prevent multiple requests while loading
 var filteredUsers: [UserSruct] = []
 var isSearching = false
 
