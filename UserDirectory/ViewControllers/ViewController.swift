@@ -9,8 +9,11 @@ import UIKit
 
 class ViewController: UIViewController{
     
+    @IBOutlet weak var themeSwitch: UISwitch!
     @IBOutlet weak var usersTbl: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var genderPercentage: UILabel!
+    @IBOutlet weak var themeLbl: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +35,9 @@ class ViewController: UIViewController{
         ])
         activityIndicator.startAnimating()
         Connection.shared.startMonitoring()
-        
+        themeSwitch.addTarget(self, action: #selector(themeSwitchChanged(_:)), for: .valueChanged)
+        checkTheme()
+       
     }
     
     func filterUsers(with searchText: String) {
@@ -66,6 +71,7 @@ class ViewController: UIViewController{
                 filteredUsers = usersArray
                 DispatchQueue.main.async {
                     activityIndicator.stopAnimating()
+                    self?.calculateGenderPercentage()
                     self?.usersTbl.reloadData()
                 }
             }
@@ -82,6 +88,43 @@ class ViewController: UIViewController{
             }
         }
     }
+    
+    @objc func themeSwitchChanged(_ sender: UISwitch) {
+            if sender.isOn {
+                // Switch is ON (Dark Mode)
+                overrideUserInterfaceStyle = .dark
+                view.backgroundColor = AppTheme.darkModeBackgroundColor
+            } else {
+                // Switch is OFF (Light Mode)
+                overrideUserInterfaceStyle = .light
+                view.backgroundColor = AppTheme.lightModeBackgroundColor
+            }
+        checkTheme()
+        }
+    
+    func checkTheme(){
+        let currentTraitCollection = self.traitCollection
+        let currentTheme: UIUserInterfaceStyle = currentTraitCollection.userInterfaceStyle
+
+                // Check the theme and take appropriate actions
+                if currentTheme == .light {
+                    themeLbl.text = "Light"
+                } else if currentTheme == .dark {
+                    themeLbl.text = "Dark"
+                }
+    }
+    func calculateGenderPercentage() {
+            // Calculate the percentage of males and females in the fetched users
+            let totalUsers = filteredUsers.count
+            let malesCount = filteredUsers.filter { $0.gender == "male" }.count
+            let femalesCount = filteredUsers.filter { $0.gender == "female" }.count
+            
+            let malesPercentage = (Double(malesCount) / Double(totalUsers)) * 100.0
+            let femalesPercentage = (Double(femalesCount) / Double(totalUsers)) * 100.0
+            
+            // Update the label text with the calculated percentages
+        genderPercentage.text = "M: \(Int(malesPercentage))% | F: \(Int(femalesPercentage))%"
+        }
 }
 
 // MARK: - UIScrollView
@@ -107,6 +150,7 @@ extension ViewController: UIScrollViewDelegate{
                         DispatchQueue.main.async {
                             self?.usersTbl.reloadData()
                             activityIndicator.stopAnimating()
+                            self?.calculateGenderPercentage()
                             isLoadingMore = false
                         }
                     }
@@ -163,7 +207,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
         cell.userNameLbl.text = "\(xorDecrypt(user.name.title)) \(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last))"
         
         // Load the user image asynchronously
-        if let imageURL = URL(string: user.picture.thumbnail) {
+        if let imageURL = URL(string: user.picture.medium) {
             URLSession.shared.dataTask(with: imageURL) { (data, _, _) in
                 if let data = data {
                     DispatchQueue.main.async {

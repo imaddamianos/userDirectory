@@ -6,8 +6,7 @@
 //
 
 import Foundation
-
-import Foundation
+import UIKit
 
 var currentPage = 1
 var usersArray: [UserSruct] = []
@@ -37,4 +36,9 @@ struct Name: Codable {
     var title: String
     var first: String
     var last: String
+}
+
+struct AppTheme {
+    static let lightModeBackgroundColor = UIColor.white
+    static let darkModeBackgroundColor = UIColor.black
 }

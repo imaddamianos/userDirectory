@@ -54,7 +54,6 @@ func encryptUser(_ user: UserSruct) -> UserSruct {
     encryptedUser.name.last = xorEncrypt(user.name.last)
     encryptedUser.email = xorEncrypt(user.email)
     encryptedUser.phone = xorEncrypt(user.phone)
-    encryptedUser.gender = xorEncrypt(user.gender)
     // Add other property encryption as needed
     return encryptedUser
 }
