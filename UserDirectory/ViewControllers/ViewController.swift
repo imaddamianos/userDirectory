@@ -31,6 +31,8 @@ class ViewController: UIViewController{
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         activityIndicator.startAnimating()
+        Connection.shared.startMonitoring()
+        
     }
     
     func filterUsers(with searchText: String) {

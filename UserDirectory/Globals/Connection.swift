@@ -9,36 +9,50 @@ import Foundation
 import Network
 import UIKit
 
-let monitor = NWPathMonitor()
-
-class Connection: NSObject {
-    static let shared: Connection = Connection()
-
-    func showAlert(title: String, message: String, viewController: UIViewController) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alertController.addAction(okAction)
-        viewController.present(alertController, animated: true, completion: nil)
-    }
-
-    func startConnMonitor(completion: @escaping (Bool) -> Void) {
-        monitor.pathUpdateHandler = { path in
+class Connection {
+    static let shared = Connection()
+    
+    private let monitor = NWPathMonitor()
+    
+    var isMonitoring = false
+    
+    private init() {}
+    
+    func startMonitoring() {
+        guard !isMonitoring else { return }
+        
+        monitor.pathUpdateHandler = { [weak self] path in
             if path.status == .satisfied {
-                DispatchQueue.main.async {
-                    completion(true) // Internet connection is available
-                }
+                print("Network is available")
             } else {
                 DispatchQueue.main.async {
-                    completion(false) // No internet connection
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let rootViewController = windowScene.windows.first?.rootViewController {
+                    self?.showAlert(title: "Network Error", message: "Check your internet connection", viewController: rootViewController)
                 }
+                }
+                print("Network is not available")
+                
             }
         }
-
+        
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
+        isMonitoring = true
     }
-}
-
-func stopConnMonitor() {
-    monitor.cancel()
+    
+    func stopMonitoring() {
+        guard isMonitoring else { return }
+        monitor.cancel()
+        isMonitoring = false
+    }
+    
+    func showAlert(title: String, message: String, viewController: UIViewController?) {
+        if let viewController = viewController {
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alertController.addAction(okAction)
+            viewController.present(alertController, animated: true, completion: nil)
+        }
+    }
 }
