@@ -20,12 +20,14 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        detailsImg.layer.cornerRadius = detailsImg.bounds.size.width / 2
+        detailsImg.clipsToBounds = true
         // Check if user data is available
          if let user = user {
-             nameLbl.text = "\(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last))"
-             emailLbl.text = xorDecrypt(user.email)
-             mobileLbl.text = xorDecrypt(user.phone)
-             genderLbl.text = xorDecrypt(user.gender)
+             nameLbl.text = "Name: \(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last))"
+             emailLbl.text = "E-mail: \(xorDecrypt(user.email))"
+             mobileLbl.text = "Mobile: \(xorDecrypt(user.phone))"
+             genderLbl.text = "Gender: \(user.gender)"
              
              // Load the user's profile picture asynchronously
              if let imageURL = URL(string: user.picture.large) {
@@ -38,6 +40,11 @@ class DetailsViewController: UIViewController {
                  }.resume()
              }
          }
+    }
+    
+    
+    @IBAction func backBtn(_ sender: Any) {
+        self.dismiss(animated: true)
     }
     
 }
