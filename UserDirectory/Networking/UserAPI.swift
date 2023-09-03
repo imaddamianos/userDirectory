@@ -48,13 +48,13 @@ func loadCachedUsers() -> [UserSruct]? {
 
 func encryptUser(_ user: UserSruct) -> UserSruct {
     var encryptedUser = user
-    // You should encrypt individual components of the Name struct, like this:
+    //encrypt individual components
     encryptedUser.name.title = xorEncrypt(user.name.title)
     encryptedUser.name.first = xorEncrypt(user.name.first)
     encryptedUser.name.last = xorEncrypt(user.name.last)
     encryptedUser.email = xorEncrypt(user.email)
     encryptedUser.phone = xorEncrypt(user.phone)
-    // Add other property encryption as needed
+    
     return encryptedUser
 }
 

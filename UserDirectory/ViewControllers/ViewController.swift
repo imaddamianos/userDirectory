@@ -28,7 +28,6 @@ class ViewController: UIViewController{
         usersTbl.dataSource = self
         usersTbl.delegate = self
         usersTbl.register(UsersTableViewCell.nib, forCellReuseIdentifier: UsersTableViewCell.identifier)
-        // Add the activity indicator
         view.addSubview(activityIndicator)
         NSLayoutConstraint.activate([
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -54,8 +53,6 @@ class ViewController: UIViewController{
                 return fullName.contains(searchTextLowercased)
             }
         }
-        
-        // Reload the table view to display the filtered results
         usersTbl.reloadData()
     }
     
@@ -82,9 +79,9 @@ class ViewController: UIViewController{
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetails" {
             if let indexPath = usersTbl.indexPathForSelectedRow {
-                let selectedUser = filteredUsers[indexPath.row] // Use the correct user array
+                let selectedUser = filteredUsers[indexPath.row]
                 if let detailsViewController = segue.destination as? DetailsViewController {
-                    detailsViewController.user = selectedUser // Assuming you have a 'user' property in DetailsViewController
+                    detailsViewController.user = selectedUser
                 }
             }
         }
@@ -107,7 +104,6 @@ class ViewController: UIViewController{
         let currentTraitCollection = self.traitCollection
         let currentTheme: UIUserInterfaceStyle = currentTraitCollection.userInterfaceStyle
 
-                // Check the theme and take appropriate actions
                 if currentTheme == .light {
                     themeLbl.text = "Light"
                 } else if currentTheme == .dark {
@@ -115,7 +111,7 @@ class ViewController: UIViewController{
                 }
     }
     func calculateGenderPercentage() {
-            // Calculate the percentage of males and females in the fetched users
+            // Calculate the percentage of males and females
             let totalUsers = filteredUsers.count
             let malesCount = filteredUsers.filter { $0.gender == "male" }.count
             let femalesCount = filteredUsers.filter { $0.gender == "female" }.count
@@ -131,7 +127,6 @@ class ViewController: UIViewController{
 // MARK: - UIScrollView
 extension ViewController: UIScrollViewDelegate{
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Assuming 'usersTbl' is your UITableView
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let screenHeight = scrollView.frame.height
@@ -187,7 +182,7 @@ extension ViewController: UISearchBarDelegate{
 extension ViewController: UITableViewDataSource, UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 140 // Adjust the height to your desired value
+        return 140
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -198,16 +193,12 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
         guard let cell = tableView.dequeueReusableCell(withIdentifier: UsersTableViewCell.identifier, for: indexPath) as? UsersTableViewCell else {
             fatalError("Failed to dequeue a reusable cell.")
         }
-        
-        // Get the user data for the current row
         let user = filteredUsers[indexPath.row]
         
         // Configure the cell with user data
         cell.emailLbl.text = xorDecrypt(user.email)
         cell.mobileNbLbl.text = xorDecrypt(user.phone)
         cell.userNameLbl.text = "\(xorDecrypt(user.name.title)) \(xorDecrypt(user.name.first)) \(xorDecrypt(user.name.last))"
-        
-        // Load the user image asynchronously
         if let imageURL = URL(string: user.picture.medium) {
             URLSession.shared.dataTask(with: imageURL) { (data, _, _) in
                 if let data = data {

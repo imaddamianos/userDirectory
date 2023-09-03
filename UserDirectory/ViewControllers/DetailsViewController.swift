@@ -28,8 +28,6 @@ class DetailsViewController: UIViewController {
              emailLbl.text = "E-mail: \(xorDecrypt(user.email))"
              mobileLbl.text = "Mobile: \(xorDecrypt(user.phone))"
              genderLbl.text = "Gender: \(user.gender)"
-             
-             // Load the user's profile picture asynchronously
              if let imageURL = URL(string: user.picture.large) {
                  URLSession.shared.dataTask(with: imageURL) { [weak self] (data, _, _) in
                      if let data = data, let image = UIImage(data: data) {
